@@ -8,17 +8,24 @@ public class Main {
     private static String greek = "\u03B1\u03B2\u03B3\u03B4\u03B5\u03B6\u03B7\u03B8\u03B9\u03BA\u03BB\u03BC\u03BD\u03BE\u03BF\u03C0\u03C1\u03C2\u03C3\u03C4\u03C5\u03C6\u03C7\u03C9\u03CA\u03CB\u03CC\u03CD\u03CE\u03CF";
 
     public static void main(String[] args) {
-        //Scanner scn = new Scanner(System.in);
-        //System.out.println("Matrix size n X n : ");
-        int matrixLength = Integer.parseInt(args[0]);
-       // System.out.println("Solution to display: ");
-        int solutionToDisplay = Integer.parseInt(args[1]);
-        //System.out.print("greek or latin? ");
-        String symbolTypes = args[2];
+
+        int matrixLength ;
+        int solutionToDisplay ;
+        String symbolTypes;
+
+        if(args.length == 0){
+            matrixLength = 3;
+            solutionToDisplay = 1;
+            symbolTypes = "latin";
+
+        }
+        else {
+        matrixLength = Integer.parseInt(args[0]);
+        solutionToDisplay = Integer.parseInt(args[2]);
+        symbolTypes = args[1];
+        }
         String symbolTypesToUse = switchSymbolsTypes(symbolTypes);
-
         int solutionCount = 1;
-
         StringBuilder randomNLetters = generateRandomNLetters(symbolTypesToUse, matrixLength);
 
         List<char[][]> matrixList = new ArrayList<char[][]>();
@@ -26,24 +33,24 @@ public class Main {
         Random random = new Random();
         long execTime = 0;
         long startTime = System.nanoTime();
-        label:
-        while (solutionCount <= solutionToDisplay) {
+        noDuplicate:
+        while (solutionCount <= solutionToDisplay && NANOSECONDS.toMillis(execTime)< 20000) {
 
-            char[][] matrix = generateMatrix(randomNLetters,solutionCount, execTime, matrixLength, random);
-            if(matrix!=null){
+            char[][] matrix = generateMatrix(randomNLetters, solutionCount, execTime, matrixLength, random);
+            if (matrix != null) {
                 if (matrixList.size() == 0) {
                     matrixList.add(matrix);
-                    printMatrix(solutionCount, execTime,matrix);
+                    printMatrix(solutionCount, execTime, matrix);
 
                     solutionCount++;
                 } else {
                     for (char[][] matrices : matrixList) {
-                        if (Arrays.deepEquals(matrices,matrix)) {
-                            continue label;
+                        if (Arrays.deepEquals(matrices, matrix)) {
+                            continue noDuplicate;
                         }
                     }
                     matrixList.add(matrix);
-                    printMatrix(solutionCount,execTime,matrix);
+                    printMatrix(solutionCount, execTime, matrix);
                     solutionCount++;
 
                 }
@@ -52,8 +59,8 @@ public class Main {
         }
 
 
+     }
 
-    }
 
     private static StringBuilder generateRandomNLetters(String letters, int matrixLength) {
         StringBuilder randomNLetters = new StringBuilder();
@@ -105,13 +112,13 @@ public class Main {
 
     }
 
-    private static void printMatrix(int count,long execTime ,char[][] matrice) {
-        System.out.println("Solution " + count + " || Application running time : " + NANOSECONDS.toMillis(execTime) +" ms");
+    private static void printMatrix(int count, long execTime, char[][] matrices) {
+        System.out.println("Solution " + count + " || Application running time : " + NANOSECONDS.toMillis(execTime) + " ms");
         System.out.println("------------------------------------");
 
-        for (int i = 0; i < matrice.length; i++) {
-            for (int j = 0; j < matrice.length; j++) {
-                System.out.print(matrice[i][j] + " ");
+        for (int i = 0; i < matrices.length; i++) {
+            for (int j = 0; j < matrices.length; j++) {
+                System.out.print(matrices[i][j] + " ");
             }
             System.out.println("");
         }
@@ -134,7 +141,7 @@ public class Main {
         return output.toString();
     }
 
-    public static String switchSymbolsTypes(String symbols){
+    public static String switchSymbolsTypes(String symbols) {
         switch (symbols) {
             case "latin":
                 symbols = latin;
@@ -143,8 +150,8 @@ public class Main {
                 symbols = greek;
                 break;
 
-             default:
-                 symbols=latin;
+            default:
+                symbols = latin;
         }
         return symbols;
     }
